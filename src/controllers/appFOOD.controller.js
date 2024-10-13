@@ -46,6 +46,7 @@ const likeResUser = async(req,res)=>{
     }
 }
 
+
 const rateResLike = async(req,res)=>{
     try {
         let {idRateResLike} = req.params;
@@ -103,10 +104,63 @@ const userOrder = async (req,res)=>{
     return res.status(500).json({message:"error"});
   }
 }
+const deleteLike = async (req,res)=>{
+    try {
+        let {userId,resId} = req.body;
+        let deletedLike = await model.like_res.destroy({
+            where:{
+                user_id: userId,
+                res_id: resId
+            }
+        });
+        if(deletedLike){
+            return res.status(200).json({message:"delete like success"});
+        }
+        return res.status(400).json({message:"like not found"})
+    } catch (error) {
+        return res.status(500).json({message:"error"})
+    }
+}
+const deleteRate = async (req,res)=>{
+    try {
+        let {userId,resId} = req.body;
+        let deletedRate = await model.rate_res.destroy({
+            where:{
+                user_id: userId,
+                res_id: resId
+            }
+        });
+        if(deletedRate){
+            return res.status(200).json({message:"delete rate success"});
+        }
+        return res.status(400).json({message:"rate not found"})
+    } catch (error) {
+        return res.status(500).json({message:"error"})
+    }
+}
+const rateRes = async (req,res)=>{
+    try {
+      let { userId, foodId, Amount } = req.body;
+      let newRate = await model.rate_res.create({
+          userId,
+          foodId,
+          Amount
+      })
+      return res.status(200).json({
+          message:"add RateRes success",
+          newRate,
+      })
+    } catch (error) {
+      return res.status(500).json({message:"error"});
+    }
+  }
 export{
     likeRes,
     likeResUser,
     rateResLike,
     rateResUserLike,
-    userOrder
+    userOrder,
+    deleteLike,
+    rateRes,
+    deleteRate
 }
